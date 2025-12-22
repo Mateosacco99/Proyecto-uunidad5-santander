@@ -1,0 +1,26 @@
+# Virtual environment
+expense_tracker_env/
+venv/
+env/
+
+# Database
+*.db
+instance/
+
+# Flask
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment variables
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
