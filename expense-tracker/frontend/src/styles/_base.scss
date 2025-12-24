@@ -1,7 +1,8 @@
 // Reset and base styles
+@use 'sass:color';
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import 'variables';
-@use 'sass:color';
+
 
 * {
   margin: 0;
