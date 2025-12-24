@@ -1,5 +1,6 @@
 @import 'base';
 @import 'components';
+@use 'sass:color';
 
 // Main App styles
 .app {
@@ -334,20 +335,20 @@
   border-radius: $border-radius;
 
   &.alert-success {
-    color: darken($success-color, 10%);
-    background-color: lighten($success-color, 40%);
-    border-color: lighten($success-color, 20%);
+    color: color.adjust($success-color, $lightness: -10%);
+    background-color: color.adjust($success-color, $lightness: 40%);
+    border-color: color.adjust($success-color, $lightness: 20%);
   }
 
   &.alert-danger {
-    color: darken($danger-color, 10%);
-    background-color: lighten($danger-color, 40%);
-    border-color: lighten($danger-color, 20%);
+    color: color.adjust($danger-color, $lightness: -10%);
+    background-color: color.adjust($danger-color, $lightness: 40%);
+    border-color: color.adjust($danger-color, $lightness: 20%);
   }
 
   &.alert-warning {
-    color: darken($warning-color, 30%);
-    background-color: lighten($warning-color, 30%);
-    border-color: lighten($warning-color, 10%);
+    color: color.adjust($warning-color, $lightness: -30%);
+    background-color: color.adjust($warning-color, $lightness: 30%);
+    border-color: color.adjust($warning-color, $lightness: 10%);
   }
 }

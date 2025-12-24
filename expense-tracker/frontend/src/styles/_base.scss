@@ -1,6 +1,7 @@
 // Reset and base styles
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import 'variables';
+@use 'sass:color';
 
 * {
   margin: 0;
@@ -49,7 +50,7 @@ a {
   transition: $transition-base;
 
   &:hover {
-    color: darken($primary-color, 15%);
+    color: color.adjust($primary-color, $lightness: -15%);
     text-decoration: underline;
   }
 }
@@ -67,7 +68,7 @@ li {
 // Code
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-  background-color: lighten($light-color, 2%);
+  background-color: color.adjust($light-color, $lightness: 2%);
   padding: 2px 4px;
   border-radius: $border-radius-sm;
   font-size: 0.875em;
