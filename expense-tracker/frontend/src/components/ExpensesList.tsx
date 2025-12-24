@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import { Lang, translations } from '../lang';
 import { Expense, Category, TransactionFormData } from '../types';
 import { expensesAPI, categoriesAPI } from '../services/api';
 import TransactionForm from './TransactionForm';
 
-const ExpensesList: React.FC = () => {
+interface ExpensesListProps {
+  lang: Lang;
+}
+
+const ExpensesList: React.FC<ExpensesListProps> = ({ lang }) => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const t = translations[lang];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,8 +27,8 @@ const ExpensesList: React.FC = () => {
         setExpenses(expensesData);
         setCategories(categoriesData);
       } catch (err) {
-        setError('Failed to load expenses');
-        console.error('Expenses error:', err);
+        setError(t.failed_to_load_expense);
+        console.error({[t.expense_error]: err});
       } finally {
         setLoading(false);
       }
@@ -37,17 +43,17 @@ const ExpensesList: React.FC = () => {
       setExpenses([newExpense, ...expenses]);
       setShowForm(false);
     } catch (err) {
-      console.error('Error adding expense:', err);
+      console.error(t.expense_error, err);
     }
   };
 
   const handleDeleteExpense = async (id: number) => {
-    if (window.confirm('Are you sure you want to delete this expense?')) {
+    if (window.confirm(t.delete_expense)) {
       try {
         await expensesAPI.delete(id);
         setExpenses(expenses.filter(expense => expense.id !== id));
       } catch (err) {
-        console.error('Error deleting expense:', err);
+        console.error(t.delete_expense_error, err);
       }
     }
   };
@@ -67,7 +73,7 @@ const ExpensesList: React.FC = () => {
     return (
       <div className="text-center py-5">
         <div className="loading-spinner"></div>
-        <p className="mt-3">Loading expenses...</p>
+        <p className="mt-3">{t.loading_expense}</p>
       </div>
     );
   }
@@ -88,7 +94,7 @@ const ExpensesList: React.FC = () => {
           className="btn btn-primary"
           onClick={() => setShowForm(!showForm)}
         >
-          {showForm ? 'Cancel' : 'Add Expense'}
+          {showForm ? t.cancel : t.add_expense}
         </button>
       </div>
 
@@ -98,6 +104,7 @@ const ExpensesList: React.FC = () => {
           categories={categories}
           onSubmit={handleAddExpense}
           onCancel={() => setShowForm(false)}
+          lang={lang}
         />
       )}
 
@@ -126,7 +133,7 @@ const ExpensesList: React.FC = () => {
                   className="btn btn-sm btn-danger"
                   onClick={() => handleDeleteExpense(expense.id)}
                 >
-                  Delete
+                  {t.delete}
                 </button>
               </div>
             </div>
@@ -134,8 +141,8 @@ const ExpensesList: React.FC = () => {
         ) : (
           <div className="empty-state">
             <div className="empty-icon">📊</div>
-            <div className="empty-text">No expenses recorded yet</div>
-            <p className="text-muted">Start tracking your expenses by adding your first entry</p>
+            <div className="empty-text">{t.no_expense}</div>
+            <p className="text-muted">{t.start_tracking_expense}</p>
           </div>
         )}
       </div>

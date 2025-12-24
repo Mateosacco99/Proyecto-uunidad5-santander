@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import { Lang, translations } from '../lang';
 import { Income, Category, TransactionFormData } from '../types';
 import { incomeAPI, categoriesAPI } from '../services/api';
 import TransactionForm from './TransactionForm';
 
-const IncomeList: React.FC = () => {
+interface IncomeListProps {
+  lang: Lang;
+}
+
+const IncomeList: React.FC<IncomeListProps> = ({ lang }) => {
   const [income, setIncome] = useState<Income[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const t = translations[lang];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,8 +27,8 @@ const IncomeList: React.FC = () => {
         setIncome(incomeData);
         setCategories(categoriesData);
       } catch (err) {
-        setError('Failed to load income');
-        console.error('Income error:', err);
+        setError(t.failed_to_load_income);
+        console.error({[t.income_error]: err});
       } finally {
         setLoading(false);
       }
@@ -42,12 +48,12 @@ const IncomeList: React.FC = () => {
   };
 
   const handleDeleteIncome = async (id: number) => {
-    if (window.confirm('Are you sure you want to delete this income entry?')) {
+    if (window.confirm(t.delete_income)) {
       try {
         await incomeAPI.delete(id);
         setIncome(income.filter(item => item.id !== id));
       } catch (err) {
-        console.error('Error deleting income:', err);
+        console.error(t.delete_income_error, err);
       }
     }
   };
@@ -67,7 +73,7 @@ const IncomeList: React.FC = () => {
     return (
       <div className="text-center py-5">
         <div className="loading-spinner"></div>
-        <p className="mt-3">Loading income...</p>
+        <p className="mt-3">{t.loading_income}</p>
       </div>
     );
   }
@@ -83,12 +89,12 @@ const IncomeList: React.FC = () => {
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1>Income</h1>
+        <h1>{t.income}</h1>
         <button
           className="btn btn-success"
           onClick={() => setShowForm(!showForm)}
         >
-          {showForm ? 'Cancel' : 'Add Income'}
+          {showForm ? t.cancel : t.add_income}
         </button>
       </div>
 
@@ -98,6 +104,7 @@ const IncomeList: React.FC = () => {
           categories={categories}
           onSubmit={handleAddIncome}
           onCancel={() => setShowForm(false)}
+          lang={lang}
         />
       )}
 
@@ -126,7 +133,7 @@ const IncomeList: React.FC = () => {
                   className="btn btn-sm btn-danger"
                   onClick={() => handleDeleteIncome(item.id)}
                 >
-                  Delete
+                  {t.delete}
                 </button>
               </div>
             </div>
@@ -134,8 +141,8 @@ const IncomeList: React.FC = () => {
         ) : (
           <div className="empty-state">
             <div className="empty-icon">💰</div>
-            <div className="empty-text">No income recorded yet</div>
-            <p className="text-muted">Start tracking your income by adding your first entry</p>
+            <div className="empty-text">{t.no_income}</div>
+            <p className="text-muted">{t.start_tracking_income}</p>
           </div>
         )}
       </div>

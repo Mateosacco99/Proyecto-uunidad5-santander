@@ -1,8 +1,17 @@
+
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { Lang, translations } from '../lang';
 
-const Navbar: React.FC = () => {
+
+interface NavbarProps {
+  lang: Lang;
+  setLang: (lang: Lang) => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ lang, setLang }) => {
   const location = useLocation();
+  const t = translations[lang];
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -19,7 +28,7 @@ const Navbar: React.FC = () => {
                 to="/" 
                 className={`nav-link ${isActive('/') ? 'active' : ''}`}
               >
-                Dashboard
+                {t.dashboard}
               </Link>
             </li>
             <li className="nav-item">
@@ -27,7 +36,7 @@ const Navbar: React.FC = () => {
                 to="/expenses" 
                 className={`nav-link ${isActive('/expenses') ? 'active' : ''}`}
               >
-                Expenses
+                {t.expenses}
               </Link>
             </li>
             <li className="nav-item">
@@ -35,10 +44,14 @@ const Navbar: React.FC = () => {
                 to="/income" 
                 className={`nav-link ${isActive('/income') ? 'active' : ''}`}
               >
-                Income
+                {t.income}
               </Link>
             </li>
           </ul>
+          <div style={{ marginLeft: '1rem', display: 'flex', gap: '0.5rem' }}>
+            <button onClick={() => setLang('en')} aria-label="English" style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', opacity: lang === 'en' ? 1 : 0.5 }}>EN</button>
+            <button onClick={() => setLang('es')} aria-label="Español" style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', opacity: lang === 'es' ? 1 : 0.5 }}>ES</button>
+          </div>
         </div>
       </div>
     </nav>

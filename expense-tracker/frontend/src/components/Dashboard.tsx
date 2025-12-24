@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Lang, translations } from '../lang';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 import { DashboardSummary } from '../types';
@@ -6,7 +7,12 @@ import { dashboardAPI } from '../services/api';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const Dashboard: React.FC = () => {
+interface DashboardProps {
+  lang: Lang;
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ lang }) => {
+    const t = translations[lang];
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -39,7 +45,7 @@ const Dashboard: React.FC = () => {
     return (
       <div className="text-center py-5">
         <div className="loading-spinner"></div>
-        <p className="mt-3">Loading dashboard...</p>
+        <p className="mt-3">{t.loading_dashboard}</p>
       </div>
     );
   }
@@ -47,7 +53,7 @@ const Dashboard: React.FC = () => {
   if (error) {
     return (
       <div className="alert alert-danger">
-        {error}
+        {t.dashboard_error}
       </div>
     );
   }
@@ -55,26 +61,24 @@ const Dashboard: React.FC = () => {
   if (!summary) {
     return (
       <div className="alert alert-warning">
-        No data available
+        {t.no_data}
       </div>
     );
   }
 
   return (
     <div className="dashboard">
-      <h1>Dashboard - {summary.month} {summary.year}</h1>
-      
+      <h1>{t.dashboard} - {summary.month} {summary.year}</h1>
       {/* Summary Cards */}
       <div className="summary-cards">
         <div className="summary-card income">
-          <div className="label">Total Income</div>
+          <div className="label">{t.total_income}</div>
           <div className="amount positive">
             {formatCurrency(summary.total_income)}
           </div>
         </div>
-        
         <div className="summary-card expenses">
-          <div className="label">Total Expenses</div>
+          <div className="label">{t.total_expenses}</div>
           <div className="amount negative">
             {formatCurrency(summary.total_expenses)}
           </div>

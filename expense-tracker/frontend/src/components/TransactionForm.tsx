@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { TransactionFormData, Category, TransactionType } from '../types';
+import {Lang, translations} from '../lang';
 
 interface TransactionFormProps {
   type: TransactionType;
   categories: Category[];
   onSubmit: (data: TransactionFormData) => void;
   onCancel: () => void;
+  lang: Lang;
 }
 
 const TransactionForm: React.FC<TransactionFormProps> = ({ 
   type, 
   categories, 
   onSubmit, 
-  onCancel 
+  onCancel,
+  lang
 }) => {
   const [formData, setFormData] = useState<TransactionFormData>({
     amount: 0,
@@ -23,25 +26,27 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  const t = translations[lang];
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     const newErrors: Record<string, string> = {};
     
     if (!formData.amount || formData.amount <= 0) {
-      newErrors.amount = 'Amount must be greater than 0';
+      newErrors.amount = t.ammount_greater_than_zero;
     }
     
     if (!formData.description.trim()) {
-      newErrors.description = 'Description is required';
+      newErrors.description = t.description_required;
     }
     
     if (!formData.category_id) {
-      newErrors.category_id = 'Category is required';
+      newErrors.category_id = t.category_required;
     }
     
     if (!formData.date) {
-      newErrors.date = 'Date is required';
+      newErrors.date = t.date_required;
     }
 
     setErrors(newErrors);
@@ -63,7 +68,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'amount' || name === 'category_id' 
+      [name]: name === t.amount || name === t.category 
         ? Number(value) 
         : value
     }));
@@ -75,11 +80,11 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
 
   return (
     <div className="transaction-form">
-      <h3>Add {type === 'expense' ? 'Expense' : 'Income'}</h3>
+      <h3>Add {type === t.expense ? t.expense : t.income}</h3>
       <form onSubmit={handleSubmit}>
         <div className="form-row">
           <div className="form-group">
-            <label htmlFor="amount">Amount</label>
+            <label htmlFor="amount">{t.amount}</label>
             <input
               type="number"
               id="amount"
@@ -97,7 +102,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
           </div>
 
           <div className="form-group">
-            <label htmlFor="category_id">Category</label>
+            <label htmlFor="category_id">{t.category}</label>
             <select
               id="category_id"
               name="category_id"
@@ -105,7 +110,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
               value={formData.category_id}
               onChange={handleInputChange}
             >
-              <option value={0}>Select a category</option>
+              <option value={0}>{t.select_a_category}</option>
               {categories.map(category => (
                 <option key={category.id} value={category.id}>
                   {category.name}
@@ -118,7 +123,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
           </div>
 
           <div className="form-group">
-            <label htmlFor="date">Date</label>
+            <label htmlFor="date">{t.date}</label>
             <input
               type="date"
               id="date"
@@ -134,7 +139,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
         </div>
 
         <div className="form-group">
-          <label htmlFor="description">Description</label>
+          <label htmlFor="description">{t.description}</label>
           <textarea
             id="description"
             name="description"
@@ -142,7 +147,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
             className={`form-control ${errors.description ? 'is-invalid' : ''}`}
             value={formData.description}
             onChange={handleInputChange}
-            placeholder={`Enter ${type} description...`}
+            placeholder={t.enter_transaction_description}
           />
           {errors.description && (
             <div className="invalid-feedback">{errors.description}</div>
@@ -151,10 +156,10 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
 
         <div className="form-actions">
           <button type="button" className="btn btn-outline" onClick={onCancel}>
-            Cancel
+            {t.cancel}
           </button>
-          <button type="submit" className={`btn ${type === 'expense' ? 'btn-primary' : 'btn-success'}`}>
-            Add {type === 'expense' ? 'Expense' : 'Income'}
+          <button type="submit" className={`btn ${type === t.expense ? 'btn-primary' : 'btn-success'}`}>
+            {t.add_transaction}
           </button>
         </div>
       </form>
